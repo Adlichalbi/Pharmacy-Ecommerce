@@ -12,15 +12,14 @@ const CreateUserForm = () => {
         
     });
 
-    const { signup, loading } = useUserStore();
-
+    const { createUser, loading } = useUserStore();
     const handleChange = (e) => {
         setNewUser({ ...newUser, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        signup(newUser);
+        createUser(newUser);
     };
 
     return (

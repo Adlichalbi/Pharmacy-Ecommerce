@@ -54,6 +54,18 @@ userSchema.pre("save", async function (next) {
         next(error);
     }
 });
+// Pre-update hook to hash the password before saving updates to the database
+userSchema.pre("findByIdAndUpdate", async function (next) {
+    if (!this.isModified("password")) return next();
+
+    try {
+        const salt = await bcrypt.genSalt(10);
+        this.password = await bcrypt.hash(this.password, salt);
+        next();
+    } catch (error) {
+        next(error);
+    }
+});
 
 // Method to compare passwords
 userSchema.methods.comparePassword = async function (password) {

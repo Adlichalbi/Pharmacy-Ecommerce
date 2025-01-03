@@ -7,6 +7,7 @@ import AdminPage from "./pages/AdminPage";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import UpdateProductForm from "./components/UpdateProductForm";
+import UpdateUserForm from "./components/UpdateUserForm";
 
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -52,6 +53,7 @@ function App() {
 						path='/secret-dashboard'
 						element={user?.role === "admin" ? <AdminPage /> : <Navigate to='/login' />}
 					/>
+					<Route path='/update-user/:id' element={user?.role === "admin" ? <UpdateUserForm /> : <Navigate to='/login' />} />
 					<Route path='/update-product/:id' element={user?.role === "admin" ? <UpdateProductForm /> : <Navigate to='/login' />} />
 					<Route path="/search/:query" element={<SearchPage />} />
 					<Route path='/category/:category' element={<CategoryPage />} />

@@ -44,11 +44,27 @@ export const deleteUser = async (req,res) => {
         return res.status(500).json({ message: "Server error", error: error.message });
     }
 }
+
+export const createUser = async (req,res) => {
+    try {
+        const user = await User.create(req.body);
+        if (!user) {
+            return res.status(404).json({ message: "User not found , not Created" });
+        }else {
+            return res.status(201).json({ message: "User created successfully" });
+        }
+        
+    } catch (error) {
+        console.log("error in createUser controller")
+        return res.status(500).json({ message: "Server error", error: error.message });
+    }
+}
+
 export const updateUser = async(req,res) => {
     try {
         const {id} = req.params;
-        const {name,email,role} = req.body
-        const user = await User.findByIdAndUpdate(id,{name,email,role},{new:true});
+        const {name,email,password,role} = req.body
+        const user = await User.findByIdAndUpdate(id,{name,email,password,role},{new:true});
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }else {

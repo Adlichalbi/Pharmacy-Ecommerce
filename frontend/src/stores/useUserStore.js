@@ -1,7 +1,6 @@
 import { create } from "zustand";
 import axios from "../lib/axios";
 import { toast } from "react-hot-toast";
-import { updateUser } from "../../../backend/controllers/user.controller";
 
 export const useUserStore = create((set, get) => ({
 	user: null,
@@ -72,17 +71,24 @@ export const useUserStore = create((set, get) => ({
 		}
 	},
 	
-	createUser: async (data) => {
-		try {
-			const response = await axios.post("/auth/signup", data);
-			toast.success("User created successfully");
-			return response.data;
-		} catch (error) {
-			console.log("Error creating a user");
+	createUser: async ({name,email,password,confirmPassword}) => {
+		set({ loading: true });
 
+		if (password !== confirmPassword) {
+			set({ loading: false });
+			return toast.error("Passwords do not match");
+		}
+
+		try {
+			const res = await axios.post("/user/createUser/",{ name,email,password});
+			set({loading: false });
+			toast.success("User created successfully");
+		} catch (error) {
+			set({ loading: false });
+			toast.error(error.response.data.message || "An error occurred");
 		}
 	},
-
+	
 	getAllUsers: async () => {
 		try {
 			const response = await axios.get("/user");
@@ -109,10 +115,12 @@ export const useUserStore = create((set, get) => ({
 	
 	updateUser: async (userId, data) => {
 		try {
-			await axios.patch(`/user/${userId}`, data);
+			await axios.patch(`/user/update-user/${userId}`, data);
 			const response = await axios.get("/user");
+			toast.success("User updated successfully");
 			return response.data;
 		} catch (error) {
+			toast.error("Failed to update user");
 			console.log(error.message);
 		}
 	}
