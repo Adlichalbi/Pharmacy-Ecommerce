@@ -12,7 +12,6 @@ const LoginPage = () => {
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
-		console.log(email, password);
 		login(email, password);
 	};
 
@@ -24,7 +23,7 @@ const LoginPage = () => {
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.8 }}
 			>
-				<h2 className='mt-6 text-center text-3xl font-extrabold text-emerald-400'>Create your account</h2>
+				<h2 className='mt-6 text-center text-3xl font-extrabold text-emerald-400'>Login to your account</h2>
 			</motion.div>
 
 			<motion.div

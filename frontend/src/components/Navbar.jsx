@@ -1,37 +1,27 @@
-import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, Search } from "lucide-react";
+import { ShoppingCart, UserPlus, LogIn, LogOut, Lock, Search, ShoppingBag } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
 import { useState } from "react";
-import axios from "axios";  // Make sure you have axios installed, or use fetch API if preferred
 
 const Navbar = () => {
   const { user, logout } = useUserStore();
   const isAdmin = user?.role === "admin";
   const { cart } = useCartStore();
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
-  const navigate = useNavigate()
-  // Handle input change
+  const navigate = useNavigate();
+
   const handleSearchChange = (event) => {
     setSearchQuery(event.target.value);
   };
 
-  // Make an API call to search for products by name
   const handleSearchSubmit = async (event) => {
-	event.preventDefault();
-	if (!searchQuery) return;
-  
-	try {
-	  // Pass the search query as part of the URL (i.e., /search/:query)
-	  navigate(`/search/${searchQuery}`); 
+    event.preventDefault();
+    if (!searchQuery) return;
 
-	  setSearchQuery("");
-	} catch (error) {
-	  console.error("Error searching for products:", error);
-	}
+    navigate(`/search/${searchQuery}`);
+    setSearchQuery("");
   };
-  
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900 bg-opacity-90 backdrop-blur-md shadow-lg z-40 transition-all duration-300 border-b border-emerald-800">
@@ -55,14 +45,14 @@ const Navbar = () => {
             </button>
           </form>
 
-         
           <nav className="flex flex-wrap items-center gap-4">
-            <Link to={"/"} className="text-gray-300 hover:text-emerald-400 transition duration-300 ease-in-out">
+            <Link to="/" className="text-gray-300 hover:text-emerald-400 transition duration-300 ease-in-out">
               Home
             </Link>
+
             {user && (
               <Link
-                to={"/cart"}
+                to="/cart"
                 className="relative group text-gray-300 hover:text-emerald-400 transition duration-300 ease-in-out"
               >
                 <ShoppingCart className="inline-block mr-1 group-hover:text-emerald-400" size={20} />
@@ -74,16 +64,30 @@ const Navbar = () => {
                 )}
               </Link>
             )}
+
+            {/* My Orders Link */}
+            {user && (
+              <Link
+                to="/my-orders"
+                className="text-gray-300 hover:text-emerald-400 transition duration-300 ease-in-out"
+              >
+                <ShoppingBag className="inline-block mr-1" size={20} />
+                <span className="hidden sm:inline">My Orders</span>
+              </Link>
+            )}
+
+            {/* Admin Dashboard Link */}
             {isAdmin && (
               <Link
                 className="bg-emerald-700 hover:bg-emerald-600 text-white px-3 py-1 rounded-md font-medium transition duration-300 ease-in-out flex items-center"
-                to={"/secret-dashboard"}
+                to="/secret-dashboard"
               >
                 <Lock className="inline-block mr-1" size={18} />
                 <span className="hidden sm:inline">Dashboard</span>
               </Link>
             )}
 
+            {/* Authentication Links */}
             {user ? (
               <button
                 className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"
@@ -95,14 +99,14 @@ const Navbar = () => {
             ) : (
               <>
                 <Link
-                  to={"/signup"}
+                  to="/signup"
                   className="bg-emerald-600 hover:bg-emerald-700 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"
                 >
                   <UserPlus className="mr-2" size={18} />
                   Sign Up
                 </Link>
                 <Link
-                  to={"/login"}
+                  to="/login"
                   className="bg-gray-700 hover:bg-gray-600 text-white py-2 px-4 rounded-md flex items-center transition duration-300 ease-in-out"
                 >
                   <LogIn className="mr-2" size={18} />
@@ -116,4 +120,5 @@ const Navbar = () => {
     </header>
   );
 };
+
 export default Navbar;

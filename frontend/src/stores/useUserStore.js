@@ -92,7 +92,6 @@ export const useUserStore = create((set, get) => ({
 	getAllUsers: async () => {
 		try {
 			const response = await axios.get("/user");
-			console.log(response.data.users);
 			return response.data.users; // Extract users array
 
 		} catch (error) {

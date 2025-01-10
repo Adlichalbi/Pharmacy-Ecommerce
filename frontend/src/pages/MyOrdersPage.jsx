@@ -1,6 +1,7 @@
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { io } from "socket.io-client";
 
 const MyOrdersPage = () => {
   const [orders, setOrders] = useState([]);
@@ -8,8 +9,7 @@ const MyOrdersPage = () => {
   useEffect(() => {
     const fetchOrders = async () => {
       try {
-        const response = await axios.get("/api/orders/my-orders"); // Ensure you use `.data`
-        console.log("Orders fetched:", response.data); // Check if it's an array
+        const response = await axios.get("/api/orders/my-orders"); // Update URL if needed
         setOrders(response.data);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -17,6 +17,24 @@ const MyOrdersPage = () => {
     };
 
     fetchOrders();
+
+    const socket = io("http://localhost:5000", {
+      withCredentials: true,
+    }); // WebSocket connection to the backend
+
+    // Listen for real-time updates
+    socket.on("order-updated", (updatedOrder) => {
+      console.log("Order updated:", updatedOrder); // Debugging log
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order._id === updatedOrder._id ? updatedOrder : order
+        )
+      );
+    });
+
+    return () => {
+      socket.disconnect(); // Cleanup
+    };
   }, []);
 
   return (
@@ -73,8 +91,8 @@ const MyOrdersPage = () => {
                   {/* Products */}
                   <td className="px-6 py-4 whitespace-nowrap">
                     <ul className="space-y-4">
-                      {order.products.map((product) => (
-                        <li key={product.product._id} className="flex items-center space-x-4">
+                      {order.products.map((product,index) => (
+                        <li key={`${product.product._id}-${index}`} className="flex items-center space-x-4">
                           <img
                             src={product.product.image || "/placeholder.png"}
                             alt={product.product.name}

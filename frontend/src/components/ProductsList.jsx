@@ -7,7 +7,6 @@ const ProductsList = () => {
 	const { deleteProduct,toggleFeaturedProduct, products } = useProductStore();
 	const navigate = useNavigate();
 
-	console.log("products", products);
 
 	return (
 		<motion.div
